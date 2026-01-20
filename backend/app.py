@@ -35,13 +35,14 @@ def predict():
     bowling_team = data['bowling_team']
 
     if prediction == 1:
-     message = f"{batting_team} will WIN 🏆"
+     message = f"{batting_team} will WIN!"
     else:
-     message = f"{bowling_team} will WIN 🏆"
+     message = f"{bowling_team} will WIN!"
 
     return jsonify({
-        'prediction': prediction,
+        'prediction': message,
         'win_probability': round(probability * 100, 2)
+
     })
 
 if __name__ == '__main__':
