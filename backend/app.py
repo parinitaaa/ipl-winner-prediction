@@ -4,7 +4,6 @@ import joblib
 
 app = Flask(__name__)
 
-# Load trained model ONCE
 model = joblib.load('model/ipl_win_predictor.pkl')
 
 def prepare_input(df):
@@ -17,7 +16,7 @@ def prepare_input(df):
 def predict():
     data = request.get_json()
 
-    # Create DataFrame from frontend input
+    #input fromt he user
     df = pd.DataFrame([{
         'batting_team': data['batting_team'],
         'bowling_team': data['bowling_team'],
@@ -32,6 +31,13 @@ def predict():
 
     prediction = int(model.predict(df)[0])
     probability = float(model.predict_proba(df)[0][1])
+    batting_team = data['batting_team']
+    bowling_team = data['bowling_team']
+
+    if prediction == 1:
+     message = f"{batting_team} will WIN 🏆"
+    else:
+     message = f"{bowling_team} will WIN 🏆"
 
     return jsonify({
         'prediction': prediction,
