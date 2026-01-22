@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./App.css";
 
 function App() {
   const [formData, setFormData] = useState({
@@ -27,74 +28,69 @@ function App() {
     setResult(null);
 
     try {
-      const response = await fetch("http://localhost:5000/predict", {
+      const res = await fetch("http://localhost:5000/predict", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
+      const data = await res.json();
       setResult(data);
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (err) {
+      console.error(err);
     }
 
     setLoading(false);
   };
 
   return (
-    <div style={{ maxWidth: "500px", margin: "40px auto", fontFamily: "Arial" }}>
-      <h2>🏏 IPL Win Predictor</h2>
+    <div className="container">
+      <div className="card">
+        <h2>🏏 IPL Win Predictor</h2>
+        <p className="subtitle">
+          Enter the current match situation
+        </p>
 
-      <form onSubmit={handleSubmit}>
-        {[
-          ["batting_team", "Batting Team"],
-          ["bowling_team", "Bowling Team"],
-          ["city", "City"],
-          ["target", "Target"],
-          ["runs_left", "Runs Left"],
-          ["balls_left", "Balls Left"],
-          ["wickets_left", "Wickets Left"]
-        ].map(([name, label]) => (
-          <div key={name} style={{ marginBottom: "10px" }}>
-            <input
-              type="text"
-              name={name}
-              placeholder={label}
-              value={formData[name]}
-              onChange={handleChange}
-              required
-              style={{ width: "100%", padding: "8px" }}
-            />
+        <form onSubmit={handleSubmit}>
+          <div className="grid">
+            {[
+              ["batting_team", "Batting Team"],
+              ["bowling_team", "Bowling Team"],
+              ["city", "City"],
+              ["target", "Target"],
+              ["runs_left", "Runs Left"],
+              ["balls_left", "Balls Left"],
+              ["wickets_left", "Wickets Left"]
+            ].map(([name, label]) => (
+              <div className="input-group" key={name}>
+                <label>{label}</label>
+                <input
+                  type="text"
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            ))}
           </div>
-        ))}
 
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: "#2ecc71",
-            border: "none",
-            color: "white",
-            fontSize: "16px",
-            cursor: "pointer"
-          }}
-        >
-          Predict
-        </button>
-      </form>
+          <button type="submit" className="btn">
+            Predict Outcome
+          </button>
+        </form>
 
-      {loading && <p>Predicting...</p>}
+        {loading && <p className="loading">Predicting...</p>}
 
-      {result && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>{result.prediction}</h3>
-          <p>Win Probability: <b>{result.win_probability}%</b></p>
-        </div>
-      )}
+        {result && (
+          <div className="result">
+            <h3>{result.prediction}</h3>
+            <p>
+              Win Probability: <span>{result.win_probability}%</span>
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
